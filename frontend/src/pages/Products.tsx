@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { PackagePlus } from 'lucide-react';
+import { api } from '../lib/api';
+import toast from 'react-hot-toast';
 
 interface Product {
   id: string;
@@ -12,12 +14,20 @@ interface Product {
 
 export function Products() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setProducts([
-      { id: '1', sku: 'USI-001', name: 'Rolamento Industrial ABEC-7', currentStock: 45, minStock: 50, unitPrice: 120.50 },
-      { id: '2', sku: 'AGI-992', name: 'Chapa de Aço Inox 3mm', currentStock: 120, minStock: 100, unitPrice: 450.00 }
-    ]);
+    async function loadProducts() {
+      try {
+        const response = await api.get('/products');
+        setProducts(response.data);
+      } catch (error) {
+        toast.error('Erro ao carregar produtos.');
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadProducts();
   }, []);
 
   return (
@@ -42,32 +52,46 @@ export function Products() {
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
-            {products.map((product) => {
-              const isLowStock = product.currentStock < product.minStock;
-              return (
-                <tr key={product.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors">
-                  <td className="px-6 py-4 font-medium text-zinc-900 dark:text-zinc-100">{product.sku}</td>
-                  <td className="px-6 py-4">{product.name}</td>
-                  <td className="px-6 py-4">
-                    <span className={`font-semibold ${isLowStock ? 'text-red-500' : 'text-emerald-500'}`}>
-                      {product.currentStock}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">{product.minStock}</td>
-                  <td className="px-6 py-4">
-                    {isLowStock ? (
-                      <span className="inline-flex items-center rounded-full bg-red-100 dark:bg-red-900/30 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:text-red-300">
-                        Baixo Estoque
+            {isLoading ? (
+              <tr>
+                <td colSpan={5} className="px-6 py-8 text-center text-zinc-500">
+                  Carregando produtos...
+                </td>
+              </tr>
+            ) : products.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="px-6 py-8 text-center text-zinc-500">
+                  Nenhum produto cadastrado.
+                </td>
+              </tr>
+            ) : (
+              products.map((product) => {
+                const isLowStock = product.currentStock < product.minStock;
+                return (
+                  <tr key={product.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors">
+                    <td className="px-6 py-4 font-medium text-zinc-900 dark:text-zinc-100">{product.sku}</td>
+                    <td className="px-6 py-4">{product.name}</td>
+                    <td className="px-6 py-4">
+                      <span className={`font-semibold ${isLowStock ? 'text-red-500' : 'text-emerald-500'}`}>
+                        {product.currentStock}
                       </span>
-                    ) : (
-                      <span className="inline-flex items-center rounded-full bg-emerald-100 dark:bg-emerald-900/30 px-2.5 py-0.5 text-xs font-medium text-emerald-800 dark:text-emerald-300">
-                        Normal
-                      </span>
-                    )}
-                  </td>
-                </tr>
-              )
-            })}
+                    </td>
+                    <td className="px-6 py-4">{product.minStock}</td>
+                    <td className="px-6 py-4">
+                      {isLowStock ? (
+                        <span className="inline-flex items-center rounded-full bg-red-100 dark:bg-red-900/30 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:text-red-300">
+                          Baixo Estoque
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center rounded-full bg-emerald-100 dark:bg-emerald-900/30 px-2.5 py-0.5 text-xs font-medium text-emerald-800 dark:text-emerald-300">
+                          Normal
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                )
+              })
+            )}
           </tbody>
         </table>
       </div>

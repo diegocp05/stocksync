@@ -1,7 +1,15 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 import { DashboardLayout } from './components/layout/DashboardLayout';
 import { Suppliers } from './pages/Suppliers';
 import { Products } from './pages/Products';
+import { Login } from './pages/Login';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+
+function PrivateRoute({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? children : <Navigate to="/login" />;
+}
 
 function DashboardHome() {
   return (
@@ -21,12 +29,14 @@ function DashboardHome() {
   );
 }
 
-function App() {
+function AppRoutes() {
   return (
-    <BrowserRouter>
-      <div className="dark"> {/* Forçando Dark Mode provisoriamente */}
+    <AuthProvider>
+      <div className="dark">
+        <Toaster position="top-right" toastOptions={{ className: 'dark:bg-zinc-900 dark:text-white dark:border dark:border-zinc-800' }} />
         <Routes>
-          <Route path="/" element={<DashboardLayout />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<PrivateRoute><DashboardLayout /></PrivateRoute>}>
             <Route index element={<DashboardHome />} />
             <Route path="products" element={<Products />} />
             <Route path="suppliers" element={<Suppliers />} />
@@ -34,6 +44,14 @@ function App() {
           </Route>
         </Routes>
       </div>
+    </AuthProvider>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppRoutes />
     </BrowserRouter>
   );
 }

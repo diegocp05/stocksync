@@ -39,6 +39,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     if (error instanceof z.ZodError) {
       res.status(400).json({ error: error.errors });
     } else {
+      console.error(error);
       res.status(500).json({ error: 'Internal server error' });
     }
   }

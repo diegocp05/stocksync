@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Plus } from 'lucide-react';
+import { api } from '../lib/api';
+import toast from 'react-hot-toast';
 
 interface Supplier {
   id: string;
@@ -11,13 +13,20 @@ interface Supplier {
 
 export function Suppliers() {
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulando fetch temporariamente enquanto não temos o Auth completo no Frontend
-    setSuppliers([
-      { id: '1', name: 'Indústria Usifresa S/A', cnpj: '12.345.678/0001-90', email: 'contato@usifresa.com', createdAt: new Date().toISOString() },
-      { id: '2', name: 'Agility Fornecimentos', cnpj: '98.765.432/0001-10', email: 'vendas@agility.com', createdAt: new Date().toISOString() }
-    ]);
+    async function loadSuppliers() {
+      try {
+        const response = await api.get('/suppliers');
+        setSuppliers(response.data);
+      } catch (error) {
+        toast.error('Erro ao carregar fornecedores.');
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadSuppliers();
   }, []);
 
   return (
@@ -40,13 +49,27 @@ export function Suppliers() {
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
-            {suppliers.map((supplier) => (
-              <tr key={supplier.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors">
-                <td className="px-6 py-4 font-medium text-zinc-900 dark:text-zinc-100">{supplier.name}</td>
-                <td className="px-6 py-4">{supplier.cnpj || '-'}</td>
-                <td className="px-6 py-4">{supplier.email || '-'}</td>
+            {isLoading ? (
+              <tr>
+                <td colSpan={3} className="px-6 py-8 text-center text-zinc-500">
+                  Carregando fornecedores...
+                </td>
               </tr>
-            ))}
+            ) : suppliers.length === 0 ? (
+              <tr>
+                <td colSpan={3} className="px-6 py-8 text-center text-zinc-500">
+                  Nenhum fornecedor cadastrado.
+                </td>
+              </tr>
+            ) : (
+              suppliers.map((supplier) => (
+                <tr key={supplier.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors">
+                  <td className="px-6 py-4 font-medium text-zinc-900 dark:text-zinc-100">{supplier.name}</td>
+                  <td className="px-6 py-4">{supplier.cnpj || '-'}</td>
+                  <td className="px-6 py-4">{supplier.email || '-'}</td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
