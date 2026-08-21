@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { DashboardLayout } from './components/layout/DashboardLayout';
+import { Suppliers } from './pages/Suppliers';
+import { Products } from './pages/Products';
 
 function DashboardHome() {
   return (
@@ -14,7 +16,6 @@ function DashboardHome() {
             1,245
           </div>
         </div>
-        {/* Adicionaremos mais cards aqui depois */}
       </div>
     </div>
   );
@@ -23,12 +24,12 @@ function DashboardHome() {
 function App() {
   return (
     <BrowserRouter>
-      <div className="dark"> {/* Forçando Dark Mode provisoriamente para vermos o design premium */}
+      <div className="dark"> {/* Forçando Dark Mode provisoriamente */}
         <Routes>
           <Route path="/" element={<DashboardLayout />}>
             <Route index element={<DashboardHome />} />
-            <Route path="products" element={<div className="text-zinc-900 dark:text-white">Página de Produtos em breve...</div>} />
-            <Route path="suppliers" element={<div className="text-zinc-900 dark:text-white">Página de Fornecedores em breve...</div>} />
+            <Route path="products" element={<Products />} />
+            <Route path="suppliers" element={<Suppliers />} />
             <Route path="orders" element={<div className="text-zinc-900 dark:text-white">Página de Ordens em breve...</div>} />
           </Route>
         </Routes>
