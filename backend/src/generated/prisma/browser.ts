@@ -32,3 +32,13 @@ export type Supplier = Prisma.SupplierModel
  * 
  */
 export type Product = Prisma.ProductModel
+/**
+ * Model SupplyOrder
+ * 
+ */
+export type SupplyOrder = Prisma.SupplyOrderModel
+/**
+ * Model OrderItem
+ * 
+ */
+export type OrderItem = Prisma.OrderItemModel

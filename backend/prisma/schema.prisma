@@ -30,6 +30,7 @@ model Supplier {
   email     String?
   phone     String?
   products  Product[]
+  orders    SupplyOrder[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
@@ -44,6 +45,38 @@ model Product {
   unitPrice   Float    @default(0.0)
   supplierId  String
   supplier    Supplier @relation(fields: [supplierId], references: [id])
+  orderItems  OrderItem[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model SupplyOrder {
+  id          String       @id @default(uuid())
+  orderNumber String       @unique
+  status      OrderStatus  @default(PENDING)
+  supplierId  String
+  supplier    Supplier     @relation(fields: [supplierId], references: [id])
+  items       OrderItem[]
+  totalAmount Float        @default(0.0)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model OrderItem {
+  id            String      @id @default(uuid())
+  supplyOrderId String
+  supplyOrder   SupplyOrder @relation(fields: [supplyOrderId], references: [id], onDelete: Cascade)
+  productId     String
+  product       Product     @relation(fields: [productId], references: [id])
+  quantity      Int
+  unitPrice     Float
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+enum OrderStatus {
+  PENDING
+  SENT
+  DELIVERED
+  CANCELLED
 }

@@ -3,6 +3,7 @@ import { Toaster } from 'react-hot-toast';
 import { DashboardLayout } from './components/layout/DashboardLayout';
 import { Suppliers } from './pages/Suppliers';
 import { Products } from './pages/Products';
+import { Orders } from './pages/Orders';
 import { Login } from './pages/Login';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
@@ -40,7 +41,7 @@ function AppRoutes() {
             <Route index element={<DashboardHome />} />
             <Route path="products" element={<Products />} />
             <Route path="suppliers" element={<Suppliers />} />
-            <Route path="orders" element={<div className="text-zinc-900 dark:text-white">Página de Ordens em breve...</div>} />
+            <Route path="orders" element={<Orders />} />
           </Route>
         </Routes>
       </div>
