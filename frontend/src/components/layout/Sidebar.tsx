@@ -38,10 +38,10 @@ export function Sidebar() {
         })}
       </div>
       <div className="p-4 border-t border-zinc-800">
-        <button className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-zinc-400 hover:bg-zinc-800/50 hover:text-white w-full transition-colors">
+        <Link to="/settings" className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-zinc-400 hover:bg-zinc-800/50 hover:text-white w-full transition-colors">
           <Settings className="h-4 w-4" />
           Configurações
-        </button>
+        </Link>
       </div>
     </div>
   );

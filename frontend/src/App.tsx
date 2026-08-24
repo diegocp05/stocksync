@@ -5,6 +5,7 @@ import { Suppliers } from './pages/Suppliers';
 import { DashboardHome } from './pages/DashboardHome';
 import { Products } from './pages/Products';
 import { Orders } from './pages/Orders';
+import { Settings } from './pages/Settings';
 import { Login } from './pages/Login';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
@@ -25,6 +26,7 @@ function AppRoutes() {
             <Route path="products" element={<Products />} />
             <Route path="suppliers" element={<Suppliers />} />
             <Route path="orders" element={<Orders />} />
+            <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>
       </div>
