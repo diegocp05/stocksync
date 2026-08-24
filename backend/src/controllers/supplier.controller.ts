@@ -33,3 +33,31 @@ export const createSupplier = async (req: Request, res: Response): Promise<void>
     }
   }
 };
+
+export const updateSupplier = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const data = supplierSchema.parse(req.body);
+    const supplier = await prisma.supplier.update({
+      where: { id },
+      data
+    });
+    res.json(supplier);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ error: error.errors });
+    } else {
+      res.status(500).json({ error: 'Failed to update supplier' });
+    }
+  }
+};
+
+export const deleteSupplier = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    await prisma.supplier.delete({ where: { id } });
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete supplier' });
+  }
+};

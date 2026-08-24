@@ -37,3 +37,31 @@ export const createProduct = async (req: Request, res: Response): Promise<void> 
     }
   }
 };
+
+export const updateProduct = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const data = productSchema.parse(req.body);
+    const product = await prisma.product.update({
+      where: { id },
+      data
+    });
+    res.json(product);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ error: error.errors });
+    } else {
+      res.status(500).json({ error: 'Failed to update product' });
+    }
+  }
+};
+
+export const deleteProduct = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    await prisma.product.delete({ where: { id } });
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete product' });
+  }
+};
