@@ -7,6 +7,7 @@ import { Products } from './pages/Products';
 import { Orders } from './pages/Orders';
 import { Settings } from './pages/Settings';
 import { Login } from './pages/Login';
+import { Register } from './pages/Register';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
@@ -21,6 +22,7 @@ function AppRoutes() {
         <Toaster position="top-right" toastOptions={{ className: 'dark:bg-zinc-900 dark:text-white dark:border dark:border-zinc-800' }} />
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/" element={<PrivateRoute><DashboardLayout /></PrivateRoute>}>
             <Route index element={<DashboardHome />} />
             <Route path="products" element={<Products />} />

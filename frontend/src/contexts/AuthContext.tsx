@@ -12,6 +12,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   signIn: (data: any) => Promise<void>;
+  signUp: (data: any) => Promise<void>;
   signOut: () => void;
   isAuthenticated: boolean;
 }
@@ -43,6 +44,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     navigate('/');
   }
 
+  async function signUp({ name, email, password }: any) {
+    await api.post('/auth/register', { name, email, password, role: 'ADMIN' });
+    await signIn({ email, password });
+  }
+
   function signOut() {
     localStorage.removeItem('@StockSync:token');
     localStorage.removeItem('@StockSync:user');
@@ -51,7 +57,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, signIn, signOut, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{ user, signIn, signUp, signOut, isAuthenticated: !!user }}>
       {children}
     </AuthContext.Provider>
   );

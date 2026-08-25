@@ -6,25 +6,26 @@ import { Package } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 
-const loginSchema = z.object({
+const registerSchema = z.object({
+  name: z.string().min(2, 'Nome deve ter no mínimo 2 caracteres'),
   email: z.string().email('Email inválido'),
   password: z.string().min(6, 'Mínimo de 6 caracteres'),
 });
 
-type LoginData = z.infer<typeof loginSchema>;
+type RegisterData = z.infer<typeof registerSchema>;
 
-export function Login() {
-  const { signIn } = useAuth();
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginData>({
-    resolver: zodResolver(loginSchema),
+export function Register() {
+  const { signUp } = useAuth();
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RegisterData>({
+    resolver: zodResolver(registerSchema),
   });
 
-  async function handleLogin(data: LoginData) {
+  async function handleRegister(data: RegisterData) {
     try {
-      await signIn(data);
-      toast.success('Bem-vindo de volta ao StockSync!');
-    } catch (error) {
-      toast.error('Credenciais inválidas. Verifique seu email e senha.');
+      await signUp(data);
+      toast.success('Conta criada com sucesso!');
+    } catch (error: any) {
+      toast.error(error?.response?.data?.error || 'Erro ao criar conta. Tente novamente.');
     }
   }
 
@@ -35,17 +36,28 @@ export function Login() {
           <div className="h-12 w-12 bg-blue-600 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-blue-500/20">
             <Package className="h-6 w-6 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Entrar no StockSync</h1>
-          <p className="text-sm text-zinc-400 mt-2">Acesse seu painel de controle industrial</p>
+          <h1 className="text-2xl font-bold text-white tracking-tight">Criar Conta</h1>
+          <p className="text-sm text-zinc-400 mt-2">Cadastre-se para acessar o painel</p>
         </div>
 
-        <form onSubmit={handleSubmit(handleLogin)} className="space-y-4">
+        <form onSubmit={handleSubmit(handleRegister)} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-zinc-300 mb-1">Nome Completo</label>
+            <input 
+              {...register('name')}
+              type="text" 
+              placeholder="João da Silva"
+              className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-colors"
+            />
+            {errors.name && <span className="text-xs text-red-500 mt-1 block">{errors.name.message}</span>}
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-zinc-300 mb-1">Email Corporativo</label>
             <input 
               {...register('email')}
               type="email" 
-              placeholder="admin@stocksync.com"
+              placeholder="voce@empresa.com"
               className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-colors"
             />
             {errors.email && <span className="text-xs text-red-500 mt-1 block">{errors.email.message}</span>}
@@ -67,14 +79,14 @@ export function Login() {
             disabled={isSubmitting}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg px-4 py-2.5 mt-4 transition-colors shadow-lg shadow-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? 'Autenticando...' : 'Entrar na Plataforma'}
+            {isSubmitting ? 'Criando conta...' : 'Criar Conta'}
           </button>
         </form>
 
         <p className="mt-6 text-center text-sm text-zinc-400">
-          Ainda não tem uma conta?{' '}
-          <Link to="/register" className="text-blue-500 hover:text-blue-400 font-medium transition-colors">
-            Cadastre-se
+          Já possui uma conta?{' '}
+          <Link to="/login" className="text-blue-500 hover:text-blue-400 font-medium transition-colors">
+            Fazer login
           </Link>
         </p>
       </div>
