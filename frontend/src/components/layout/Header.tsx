@@ -1,4 +1,5 @@
-import { Bell, Search, UserCircle } from 'lucide-react';
+import { Search, UserCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export function Header() {
   return (
@@ -13,13 +14,9 @@ export function Header() {
       </div>
       
       <div className="flex items-center gap-4">
-        <button className="relative p-2 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-full transition-colors">
-          <Bell className="h-5 w-5" />
-          <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500 border border-white dark:border-zinc-950"></span>
-        </button>
-        <div className="h-8 w-8 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center cursor-pointer border border-zinc-300 dark:border-zinc-700">
+        <Link to="/settings" className="h-8 w-8 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center cursor-pointer border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors">
           <UserCircle className="h-5 w-5 text-zinc-600 dark:text-zinc-400" />
-        </div>
+        </Link>
       </div>
     </header>
   );
